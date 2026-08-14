@@ -16,9 +16,9 @@ val appModule = module {
         TelegramBot(ConfigFactory.load().getString("telegram.botToken"))
     }
     single { TelegramReplyService(get()) }
-    single<TelegramUpdateProcessor> { CommandProcessor() }
-    single<TelegramUpdateProcessor> { MessageProcessor() }
-    single<TelegramUpdateProcessor> { ImageProcessor() }
-    single<TelegramUpdateProcessor> { NoopProcessor() }
+    single<TelegramUpdateProcessor> { CommandProcessor(get()) }
+    single<TelegramUpdateProcessor> { MessageProcessor(get()) }
+    single<TelegramUpdateProcessor> { ImageProcessor(get()) }
+    single<TelegramUpdateProcessor> { NoopProcessor(get()) }
     single { TelegramWebhookService(getAll()) }
 }

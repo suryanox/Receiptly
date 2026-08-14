@@ -16,7 +16,8 @@ class TelegramReplyService(private val bot: TelegramBot) {
     }
 
     suspend fun sendTextWithButtons(chatId: Long, text: String, buttons: List<String>) = withContext(Dispatchers.IO) {
-        val keyboard = buttons.chunked(2).map { row ->
+        val limitedButtons = buttons.take(100)
+        val keyboard = limitedButtons.chunked(8).map { row ->
             row.map { KeyboardButton(it) }.toTypedArray()
         }.toTypedArray()
 
