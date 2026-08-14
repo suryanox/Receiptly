@@ -9,8 +9,7 @@ class TelegramWebhookService(
 ) {
     suspend fun handleUpdate(update: Update) {
         val context = update.toRequestContext()
-        processors.sortedBy { it.order }
-            .firstOrNull { it.canProcess(context) }
+        processors.firstOrNull { it.canProcess(context) }
             ?.process(context)
     }
 }

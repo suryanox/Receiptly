@@ -5,7 +5,6 @@ import com.reciply.telegram.model.MessageType
 import com.reciply.telegram.model.TelegramRequestContext
 
 class ImageProcessor(private val replyService: TelegramReplyService) : TelegramUpdateProcessor {
-    override val order: Int = 3
 
     override fun canProcess(context: TelegramRequestContext): Boolean {
         return context.messageType == MessageType.IMAGE

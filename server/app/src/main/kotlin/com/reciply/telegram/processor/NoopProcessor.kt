@@ -4,7 +4,6 @@ import com.reciply.telegram.TelegramReplyService
 import com.reciply.telegram.model.TelegramRequestContext
 
 class NoopProcessor(private val replyService: TelegramReplyService) : TelegramUpdateProcessor {
-    override val order: Int = Int.MAX_VALUE
 
     override fun canProcess(context: TelegramRequestContext): Boolean = true
 
