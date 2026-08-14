@@ -1,13 +1,15 @@
 package com.reciply.telegram.processor
 
-import com.reciply.telegram.service.TelegramReplyService
+import com.reciply.telegram.model.MessageType
 import com.reciply.telegram.model.TelegramRequestContext
 
-class NoopProcessor(private val replyService: TelegramReplyService) : TelegramUpdateProcessor {
+class NoopProcessor() : TelegramUpdateProcessor {
 
-    override fun canProcess(context: TelegramRequestContext): Boolean = true
+    override fun canProcess(context: TelegramRequestContext): Boolean {
+        return context.messageType == MessageType.UNSUPPORTED
+    }
 
     override suspend fun process(context: TelegramRequestContext) {
-        // no-op
+        // For now not returning anything. As replying to every unsupported event could spam
     }
 }

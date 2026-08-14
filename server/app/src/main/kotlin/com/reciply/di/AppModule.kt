@@ -19,6 +19,6 @@ val appModule = module {
     single<TelegramUpdateProcessor> { CommandProcessor(get()) }
     single<TelegramUpdateProcessor> { ImageProcessor(get()) }
     single<TelegramUpdateProcessor> { TextMessageProcessor(get()) }
-    single<TelegramUpdateProcessor> { NoopProcessor(get()) }
+    single<TelegramUpdateProcessor> { NoopProcessor() }
     single { TelegramWebhookService(getAll()) }
 }
