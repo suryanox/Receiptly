@@ -1,4 +1,4 @@
-package com.reciply.telegram
+package com.reciply.telegram.service
 
 import com.reciply.telegram.model.toRequestContext
 import com.pengrad.telegrambot.model.Update

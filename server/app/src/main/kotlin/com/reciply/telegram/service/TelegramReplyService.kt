@@ -1,4 +1,4 @@
-package com.reciply.telegram
+package com.reciply.telegram.service
 
 import com.pengrad.telegrambot.TelegramBot
 import com.pengrad.telegrambot.model.request.KeyboardButton

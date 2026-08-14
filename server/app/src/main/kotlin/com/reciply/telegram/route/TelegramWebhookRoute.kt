@@ -1,4 +1,4 @@
-package com.reciply.telegram
+package com.reciply.telegram.route
 
 import com.pengrad.telegrambot.model.Update
 import io.ktor.server.application.*
