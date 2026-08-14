@@ -7,6 +7,8 @@ class TelegramWebhookService(
     private val processors: List<TelegramUpdateProcessor>
 ) {
     fun handleUpdate(update: Update) {
-        processors.firstOrNull { it.canProcess(update) }?.process(update)
+        processors.sortedBy { it.order }
+            .firstOrNull { it.canProcess(update) }
+            ?.process(update)
     }
 }

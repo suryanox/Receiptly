@@ -3,6 +3,7 @@ package com.reciply.telegram.processor
 import com.pengrad.telegrambot.model.Update
 
 class ImageProcessor : TelegramUpdateProcessor {
+    override val order: Int = 2
     override fun canProcess(update: Update): Boolean {
         return update.message()?.photo()?.isNotEmpty() == true
     }
