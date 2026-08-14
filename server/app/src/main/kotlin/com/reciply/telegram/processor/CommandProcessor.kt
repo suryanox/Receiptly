@@ -1,6 +1,6 @@
 package com.reciply.telegram.processor
 
-import com.reciply.telegram.TelegramReplyService
+import com.reciply.telegram.service.TelegramReplyService
 import com.reciply.telegram.model.MessageType
 import com.reciply.telegram.model.TelegramRequestContext
 

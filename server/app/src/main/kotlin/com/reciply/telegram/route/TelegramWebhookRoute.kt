@@ -1,6 +1,7 @@
 package com.reciply.telegram.route
 
 import com.pengrad.telegrambot.model.Update
+import com.reciply.telegram.service.TelegramWebhookService
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*

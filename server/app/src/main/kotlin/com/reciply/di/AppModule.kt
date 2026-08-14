@@ -1,8 +1,8 @@
 package com.reciply.di
 
 import com.pengrad.telegrambot.TelegramBot
-import com.reciply.telegram.TelegramReplyService
-import com.reciply.telegram.TelegramWebhookService
+import com.reciply.telegram.service.TelegramReplyService
+import com.reciply.telegram.service.TelegramWebhookService
 import com.reciply.telegram.processor.CommandProcessor
 import com.reciply.telegram.processor.ImageProcessor
 import com.reciply.telegram.processor.TextMessageProcessor

@@ -1,7 +1,7 @@
 package com.reciply
 
 import com.reciply.di.appModule
-import com.reciply.telegram.telegramWebhook
+import com.reciply.telegram.route.telegramWebhook
 import com.typesafe.config.ConfigFactory
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
