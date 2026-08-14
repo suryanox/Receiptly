@@ -4,7 +4,7 @@ import com.reciply.telegram.TelegramReplyService
 import com.reciply.telegram.model.MessageType
 import com.reciply.telegram.model.TelegramRequestContext
 
-class MessageProcessor(private val replyService: TelegramReplyService) : TelegramUpdateProcessor {
+class TextMessageProcessor(private val replyService: TelegramReplyService) : TelegramUpdateProcessor {
     override val order: Int = 4
 
     override fun canProcess(context: TelegramRequestContext): Boolean {
