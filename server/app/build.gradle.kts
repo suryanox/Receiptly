@@ -10,6 +10,12 @@ repositories {
 dependencies {
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)
+    implementation("com.github.pengrad:java-telegram-bot-api:10.1.0")
+    implementation("com.typesafe:config:1.4.3")
+    implementation("io.insert-koin:koin-ktor:3.5.3")
+    implementation("io.insert-koin:koin-logger-slf4j:3.5.3")
+    implementation("io.ktor:ktor-server-content-negotiation:3.0.3")
+    implementation("io.ktor:ktor-serialization-jackson:3.0.3")
 }
 
 testing {
