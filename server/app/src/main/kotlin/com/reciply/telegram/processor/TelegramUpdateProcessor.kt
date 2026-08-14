@@ -1,10 +1,9 @@
 package com.reciply.telegram.processor
 
-import com.pengrad.telegrambot.model.Update
-import com.reciply.telegram.TelegramReplyService
+import com.reciply.telegram.model.TelegramRequestContext
 
 interface TelegramUpdateProcessor {
     val order: Int
-    fun canProcess(update: Update): Boolean
-    suspend fun process(update: Update)
+    fun canProcess(context: TelegramRequestContext): Boolean
+    suspend fun process(context: TelegramRequestContext)
 }

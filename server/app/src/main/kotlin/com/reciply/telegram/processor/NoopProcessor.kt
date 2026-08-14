@@ -1,14 +1,14 @@
 package com.reciply.telegram.processor
 
-import com.pengrad.telegrambot.model.Update
 import com.reciply.telegram.TelegramReplyService
+import com.reciply.telegram.model.TelegramRequestContext
 
 class NoopProcessor(private val replyService: TelegramReplyService) : TelegramUpdateProcessor {
     override val order: Int = Int.MAX_VALUE
 
-    override fun canProcess(update: Update): Boolean = true
+    override fun canProcess(context: TelegramRequestContext): Boolean = true
 
-    override suspend fun process(update: Update) {
-
+    override suspend fun process(context: TelegramRequestContext) {
+        // no-op
     }
 }

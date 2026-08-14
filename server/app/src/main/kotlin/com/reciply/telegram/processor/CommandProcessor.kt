@@ -1,16 +1,17 @@
 package com.reciply.telegram.processor
 
-import com.pengrad.telegrambot.model.Update
 import com.reciply.telegram.TelegramReplyService
+import com.reciply.telegram.model.MessageType
+import com.reciply.telegram.model.TelegramRequestContext
 
 class CommandProcessor(private val replyService: TelegramReplyService) : TelegramUpdateProcessor {
     override val order: Int = 1
 
-    override fun canProcess(update: Update): Boolean {
-        return update.message()?.text()?.startsWith("/") == true
+    override fun canProcess(context: TelegramRequestContext): Boolean {
+        return context.messageType == MessageType.COMMAND
     }
 
-    override suspend fun process(update: Update) {
+    override suspend fun process(context: TelegramRequestContext) {
         // TODO: implement
     }
 }
