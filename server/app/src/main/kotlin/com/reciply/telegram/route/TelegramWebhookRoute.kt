@@ -1,5 +1,6 @@
 package com.reciply.telegram.route
 
+import com.google.gson.Gson
 import com.pengrad.telegrambot.model.Update
 import com.reciply.telegram.service.TelegramWebhookService
 import io.ktor.server.application.*
@@ -10,9 +11,12 @@ import org.koin.ktor.ext.inject
 
 fun Route.telegramWebhook() {
     val service: TelegramWebhookService by inject()
+    val gson = Gson()
 
     post("/telegram/webhook") {
-        val update = call.receive<Update>()
+        val raw = call.receiveText()
+        call.application.environment.log.info("Telegram webhook: $raw")
+        val update = gson.fromJson(raw, Update::class.java)
         service.handleUpdate(update)
         call.respondText("OK")
     }

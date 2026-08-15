@@ -8,14 +8,24 @@ repositories {
 }
 
 dependencies {
-    implementation(libs.ktor.server.core)
-    implementation(libs.ktor.server.netty)
+    // Ktor
+    implementation("io.ktor:ktor-server-core-jvm:3.3.1")
+    implementation("io.ktor:ktor-server-netty-jvm:3.3.1")
+    implementation("io.ktor:ktor-server-content-negotiation-jvm:3.3.1")
+    implementation("io.ktor:ktor-serialization-jackson-jvm:3.3.1")
+
+    // Telegram
     implementation("com.github.pengrad:java-telegram-bot-api:10.1.0")
+
+    // Config
     implementation("com.typesafe:config:1.4.3")
-    implementation("io.insert-koin:koin-ktor:3.5.3")
-    implementation("io.insert-koin:koin-logger-slf4j:3.5.3")
-    implementation("io.ktor:ktor-server-content-negotiation:3.0.3")
-    implementation("io.ktor:ktor-serialization-jackson:3.0.3")
+
+    // Koin
+    implementation("io.insert-koin:koin-ktor:4.1.0")
+    implementation("io.insert-koin:koin-logger-slf4j:4.1.0")
+
+    // Logging
+    implementation("ch.qos.logback:logback-classic:1.5.18")
 }
 
 testing {

@@ -3,11 +3,9 @@ package com.reciply.di
 import com.pengrad.telegrambot.TelegramBot
 import com.reciply.telegram.service.TelegramReplyService
 import com.reciply.telegram.service.TelegramWebhookService
-import com.reciply.telegram.processor.CommandProcessor
+import com.reciply.telegram.processor.CallbackProcessor
 import com.reciply.telegram.processor.ImageProcessor
-import com.reciply.telegram.processor.TextMessageProcessor
-import com.reciply.telegram.processor.NoopProcessor
-import com.reciply.telegram.processor.TelegramUpdateProcessor
+import com.reciply.telegram.processor.TextProcessor
 import com.typesafe.config.ConfigFactory
 import org.koin.dsl.module
 
@@ -16,9 +14,15 @@ val appModule = module {
         TelegramBot(ConfigFactory.load().getString("telegram.botToken"))
     }
     single { TelegramReplyService(get()) }
-    single<TelegramUpdateProcessor> { CommandProcessor(get()) }
-    single<TelegramUpdateProcessor> { ImageProcessor(get()) }
-    single<TelegramUpdateProcessor> { TextMessageProcessor(get()) }
-    single<TelegramUpdateProcessor> { NoopProcessor() }
-    single { TelegramWebhookService(getAll()) }
+
+    single { TextProcessor(get()) }
+    single { CallbackProcessor(get()) }
+    single { ImageProcessor(get()) }
+
+    single {
+        val textProcessor = get<TextProcessor>()
+        val callbackProcessor = get<CallbackProcessor>()
+        val imageProcessor = get<ImageProcessor>()
+        TelegramWebhookService(listOf(textProcessor, callbackProcessor, imageProcessor))
+    }
 }

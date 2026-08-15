@@ -11,5 +11,6 @@ data class TelegramRequestContext(
     val languageCode: String?,
     val text: String?,
     val photoUrls: List<String>,
-    val messageType: MessageType
+    val messageType: MessageType,
+    val callbackQueryId: String? = null
 )
