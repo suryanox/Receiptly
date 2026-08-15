@@ -12,7 +12,7 @@ class TelegramWebhookService(
     private val log = LoggerFactory.getLogger(TelegramWebhookService::class.java)
 
     suspend fun handleUpdate(update: Update) {
-        val context = update.toRequestContext()
+        val context = update.toRequestContext() ?: return
         log.info("Processing: type=${context.messageType}, text=${context.text}")
         val processor = processors.firstOrNull { it.canProcess(context) }
         log.info("Processor found: ${processor?.javaClass?.simpleName}")

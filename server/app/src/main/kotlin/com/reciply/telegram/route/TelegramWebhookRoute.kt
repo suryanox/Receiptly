@@ -3,7 +3,6 @@ package com.reciply.telegram.route
 import com.google.gson.Gson
 import com.pengrad.telegrambot.model.Update
 import com.reciply.telegram.service.TelegramWebhookService
-import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -15,7 +14,6 @@ fun Route.telegramWebhook() {
 
     post("/telegram/webhook") {
         val raw = call.receiveText()
-        call.application.environment.log.info("Telegram webhook: $raw")
         val update = gson.fromJson(raw, Update::class.java)
         service.handleUpdate(update)
         call.respondText("OK")

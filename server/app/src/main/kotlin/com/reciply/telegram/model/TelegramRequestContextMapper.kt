@@ -2,7 +2,7 @@ package com.reciply.telegram.model
 
 import com.pengrad.telegrambot.model.Update
 
-fun Update.toRequestContext(): TelegramRequestContext {
+fun Update.toRequestContext(): TelegramRequestContext? {
     val callbackQuery = callbackQuery()
 
     if (callbackQuery != null) {
@@ -25,7 +25,7 @@ fun Update.toRequestContext(): TelegramRequestContext {
         )
     }
 
-    val message = message() ?: throw IllegalStateException("Message is null")
+    val message = message() ?: return null
     val from = message.from()
 
     val messageType = when {
