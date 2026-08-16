@@ -1,10 +1,19 @@
 package com.reciply.db
 
+import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 
-class ReceiptRepository {
-    suspend fun insert(imageFileId: String, chatId: Long): Long = newSuspendedTransaction {
+class ReceiptRepository(
+    private val database: Database
+) {
+
+    suspend fun insert(
+        imageFileId: String,
+        chatId: Long
+    ): Long = newSuspendedTransaction(
+        db = database
+    ) {
         ReceiptTable.insert {
             it[ReceiptTable.imageFileId] = imageFileId
             it[ReceiptTable.chatId] = chatId

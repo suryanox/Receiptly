@@ -8,21 +8,24 @@ import org.jetbrains.exposed.sql.Database
 import org.koin.dsl.module
 
 val databaseModule = module {
-    single {
+
+    single<HikariDataSource> {
         val config = ConfigFactory.load()
+
         HikariConfig().apply {
             jdbcUrl = config.getString("database.url")
             driverClassName = config.getString("database.driver")
             username = config.getString("database.user")
             password = config.getString("database.password")
             maximumPoolSize = config.getInt("database.maxPoolSize")
-        }.let { HikariDataSource(it) }
+        }.let(::HikariDataSource)
     }
 
-    single {
+    single<Database> {
         Database.connect(get<HikariDataSource>())
-        get<HikariDataSource>()
     }
 
-    single { ReceiptRepository() }
+    single<ReceiptRepository> {
+        ReceiptRepository(get())
+    }
 }
