@@ -17,7 +17,7 @@ val appModule = module {
 
     single { TextProcessor(get()) }
     single { CallbackProcessor(get()) }
-    single { ImageProcessor(get()) }
+    single { ImageProcessor(get(), get()) }
 
     single {
         val textProcessor = get<TextProcessor>()

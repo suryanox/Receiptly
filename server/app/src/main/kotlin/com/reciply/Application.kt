@@ -1,6 +1,7 @@
 package com.reciply
 
 import com.reciply.di.appModule
+import com.reciply.di.databaseModule
 import com.reciply.telegram.route.telegramWebhook
 import com.typesafe.config.ConfigFactory
 import io.ktor.server.application.*
@@ -17,7 +18,7 @@ fun main() {
 
     embeddedServer(Netty, port = port, host = host) {
         install(Koin) {
-            modules(appModule)
+            modules(appModule, databaseModule)
         }
         configureRouting()
     }.start(wait = true)
