@@ -49,3 +49,9 @@ POSTGRES_USER=postgres
 POSTGRES_PASSWORD=postgres
 TELEGRAM_BOT_TOKEN=your_bot_token
 ```
+
+## Fmt
+
+./gradlew ktlintCheck / ./gradlew ktlintFormat
+
+poetry run ruff format src/ and poetry run ruff check src/.

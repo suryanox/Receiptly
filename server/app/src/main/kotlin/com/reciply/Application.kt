@@ -26,12 +26,12 @@ fun main() {
     embeddedServer(
         Netty,
         port = port,
-        host = host
+        host = host,
     ) {
         install(Koin) {
             modules(
                 appModule,
-                databaseModule
+                databaseModule,
             )
         }
 
@@ -41,11 +41,11 @@ fun main() {
                 if (call.request.path() == "/telegram/webhook") {
                     logger.error(
                         "Telegram webhook failed",
-                        cause
+                        cause,
                     )
 
                     call.respond(
-                        HttpStatusCode.OK
+                        HttpStatusCode.OK,
                     )
                 } else {
                     throw cause

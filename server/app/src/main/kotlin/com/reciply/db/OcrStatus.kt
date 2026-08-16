@@ -4,5 +4,5 @@ enum class OcrStatus {
     PENDING,
     PROCESSING,
     OCR_COMPLETED,
-    FAILED
+    FAILED,
 }

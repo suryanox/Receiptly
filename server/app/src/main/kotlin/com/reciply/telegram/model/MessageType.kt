@@ -4,5 +4,5 @@ enum class MessageType {
     TEXT,
     IMAGE,
     CALLBACK,
-    UNSUPPORTED
+    UNSUPPORTED,
 }

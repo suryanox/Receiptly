@@ -43,9 +43,10 @@ dependencies {
 
 testing {
     suites {
-        val test = named<JvmTestSuite>("test") {
-            useKotlinTest("2.4.0")
-        }
+        val test =
+            named<JvmTestSuite>("test") {
+                useKotlinTest("2.4.0")
+            }
     }
 }
 
