@@ -18,12 +18,13 @@ class ImageProcessor(
     }
 
     override suspend fun process(context: TelegramRequestContext) {
-        val fileId = context.photoUrls.firstOrNull() ?: return
+        val fileId = context.photoUrl ?: return
         log.info("Processing image: fileId=$fileId, chatId=${context.chatId}")
 
         val id = receiptRepository.insert(
             imageFileId = fileId,
-            chatId = context.chatId
+            chatId = context.chatId,
+            userId = context.userId
         )
 
         log.info("Receipt created: id=$id")

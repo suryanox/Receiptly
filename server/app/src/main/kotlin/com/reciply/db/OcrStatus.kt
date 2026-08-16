@@ -3,6 +3,6 @@ package com.reciply.db
 enum class OcrStatus {
     PENDING,
     PROCESSING,
-    COMPLETED,
+    OCR_COMPLETED,
     FAILED
 }

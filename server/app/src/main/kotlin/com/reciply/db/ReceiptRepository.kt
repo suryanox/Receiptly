@@ -10,13 +10,15 @@ class ReceiptRepository(
 
     suspend fun insert(
         imageFileId: String,
-        chatId: Long
+        chatId: Long,
+        userId: Long
     ): Long = newSuspendedTransaction(
         db = database
     ) {
         ReceiptTable.insert {
             it[ReceiptTable.imageFileId] = imageFileId
             it[ReceiptTable.chatId] = chatId
+            it[ReceiptTable.userId] = userId
             it[ReceiptTable.ocrStatus] = OcrStatus.PENDING
         }[ReceiptTable.id]
     }

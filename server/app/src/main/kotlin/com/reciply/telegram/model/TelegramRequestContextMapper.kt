@@ -19,7 +19,7 @@ fun Update.toRequestContext(): TelegramRequestContext? {
             lastName = from.lastName(),
             languageCode = from.languageCode(),
             text = callbackQuery.data(),
-            photoUrls = emptyList(),
+            photoUrl = null,
             messageType = MessageType.CALLBACK,
             callbackQueryId = callbackQuery.id()
         )
@@ -44,7 +44,9 @@ fun Update.toRequestContext(): TelegramRequestContext? {
         lastName = from.lastName(),
         languageCode = from.languageCode(),
         text = message.text(),
-        photoUrls = message.photo()?.map { it.fileId() } ?: emptyList(),
+        photoUrl = message.photo()
+            ?.maxByOrNull { it.width() * it.height() }
+            ?.fileId(),
         messageType = messageType
     )
 }

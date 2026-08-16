@@ -1,8 +1,37 @@
-from fastapi import FastAPI
+import asyncio
+import logging
 
-app = FastAPI()
+from reciply_ocr.config import load_config
+from reciply_ocr.db import get_conn, init_db, put_conn
+from reciply_ocr.telegram_client import TelegramClient
+from reciply_ocr.worker import process_once
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+)
+logger = logging.getLogger("reciply_ocr")
 
 
-@app.get("/health")
-def health():
-    return {"status": "ok"}
+async def main():
+    config = load_config()
+    init_db(config)
+
+    tg = TelegramClient(config["telegram"]["botToken"])
+    interval = config["app"]["pollIntervalSeconds"]
+    logger.info("%s started, polling every %ss", config["app"]["name"], interval)
+
+    try:
+        while True:
+            conn = get_conn()
+            try:
+                await process_once(conn, tg)
+            finally:
+                put_conn(conn)
+            await asyncio.sleep(interval)
+    finally:
+        await tg.close()
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
