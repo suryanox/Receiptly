@@ -8,3 +8,4 @@ ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor"
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "12.1.2" }

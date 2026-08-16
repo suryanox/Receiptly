@@ -21,6 +21,16 @@ packages = [
     { include = "reciply_ocr", from = "src" }
 ]
 
+[tool.poetry.group.dev.dependencies]
+ruff = ">=0.6.0"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"

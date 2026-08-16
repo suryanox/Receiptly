@@ -1,6 +1,11 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.ktlint)
     application
+}
+
+ktlint {
+    version = "1.5.0"
 }
 
 repositories {
