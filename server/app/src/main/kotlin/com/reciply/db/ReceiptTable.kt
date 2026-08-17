@@ -9,7 +9,7 @@ object ReceiptTable : Table("receipts") {
     val imageFileId = varchar("image_file_id", 255).uniqueIndex()
     val chatId = long("chat_id")
     val userId = long("user_id").index()
-    val ocrStatus = enumerationByName("ocr_status", 20, OcrStatus::class).default(OcrStatus.PENDING)
+    val status = enumerationByName("status", 20, Status::class).default(Status.PENDING)
     val createdAt = datetime("created_at").defaultExpression(CurrentDateTime)
     val updatedAt = datetime("updated_at").defaultExpression(CurrentDateTime)
 

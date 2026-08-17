@@ -19,7 +19,7 @@ class ReceiptRepository(
                 it[ReceiptTable.imageFileId] = imageFileId
                 it[ReceiptTable.chatId] = chatId
                 it[ReceiptTable.userId] = userId
-                it[ReceiptTable.ocrStatus] = OcrStatus.PENDING
+                it[ReceiptTable.status] = Status.PENDING
             }[ReceiptTable.id]
         }
 }

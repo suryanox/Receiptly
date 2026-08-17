@@ -18,10 +18,10 @@ class ReceiptRepository:
                 cur.execute(
                     """
                     UPDATE receipts
-                    SET ocr_status = 'PROCESSING', updated_at = NOW()
+                    SET status = 'PROCESSING', updated_at = NOW()
                     WHERE id = (
                         SELECT id FROM receipts
-                        WHERE ocr_status = 'PENDING'
+                        WHERE status = 'PENDING'
                         ORDER BY created_at
                         LIMIT 1
                         FOR UPDATE SKIP LOCKED
@@ -49,7 +49,7 @@ class ReceiptRepository:
                     (receipt_id, Json(json.loads(json.dumps(ocr_result)))),
                 )
                 cur.execute(
-                    "UPDATE receipts SET ocr_status = %s, updated_at = NOW() WHERE id = %s",
+                    "UPDATE receipts SET status = %s, updated_at = NOW() WHERE id = %s",
                     (status, receipt_id),
                 )
                 conn.commit()
@@ -61,7 +61,7 @@ class ReceiptRepository:
         try:
             with conn.cursor() as cur:
                 cur.execute(
-                    "UPDATE receipts SET ocr_status = %s, updated_at = NOW() WHERE id = %s",
+                    "UPDATE receipts SET status = %s, updated_at = NOW() WHERE id = %s",
                     (status, receipt_id),
                 )
                 conn.commit()
