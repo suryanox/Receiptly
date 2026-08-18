@@ -3,6 +3,7 @@ import logging
 
 from reciply_ocr.config import load_config
 from reciply_ocr.db import get_conn, init_db, put_conn
+from reciply_ocr.openrouter import OpenRouterClient
 from reciply_ocr.repository import ReceiptRepository
 from reciply_ocr.telegram_client import TelegramClient
 from reciply_ocr.worker import process_once
@@ -14,18 +15,27 @@ logging.basicConfig(
 logger = logging.getLogger("reciply_ocr")
 
 
+def _build_openrouter(config) -> OpenRouterClient:
+    orc = config["openrouter"]
+    return OpenRouterClient(
+        api_key=orc["apiKey"],
+        model=orc.get("model") if orc.get("model") else None,
+    )
+
+
 async def main():
     config = load_config()
     init_db(config)
 
     tg = TelegramClient(config["telegram"]["botToken"])
     repo = ReceiptRepository(get_conn, put_conn)
+    or_client = _build_openrouter(config)
     interval = config["app"]["pollIntervalSeconds"]
     logger.info("%s started, polling every %ss", config["app"]["name"], interval)
 
     try:
         while True:
-            await process_once(repo, tg)
+            await process_once(repo, tg, or_client)
             await asyncio.sleep(interval)
     finally:
         await tg.close()

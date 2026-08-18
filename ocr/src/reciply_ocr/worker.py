@@ -4,13 +4,18 @@ import os
 import tempfile
 
 from reciply_ocr.ocr import run_ocr
+from reciply_ocr.openrouter import OpenRouterClient
 from reciply_ocr.repository import ReceiptRepository
 from reciply_ocr.telegram_client import TelegramClient
 
 logger = logging.getLogger("reciply_ocr.worker")
 
 
-async def process_once(repo: ReceiptRepository, tg: TelegramClient):
+def _ocr_text(ocr_result: list[dict]) -> str:
+    return "\n".join(line["text"] for line in ocr_result)
+
+
+async def process_once(repo: ReceiptRepository, tg: TelegramClient, or_client: OpenRouterClient):
     claimed = repo.claim_pending()
     if claimed is None:
         logger.debug("No pending receipts")
@@ -34,10 +39,7 @@ async def process_once(repo: ReceiptRepository, tg: TelegramClient):
             return
 
         logger.info(
-            "Receipt id=%s OCR found %d line(s): %s",
-            receipt_id,
-            len(ocr_result),
-            json.dumps(ocr_result, ensure_ascii=False),
+            "Receipt id=%s OCR found %d line(s)", receipt_id, len(ocr_result)
         )
         for i, line in enumerate(ocr_result):
             logger.info(
@@ -47,10 +49,20 @@ async def process_once(repo: ReceiptRepository, tg: TelegramClient):
                 line["confidence"],
             )
 
-        repo.save_result_and_complete(receipt_id, ocr_result, "OCR_COMPLETED")
-        logger.info("Receipt id=%s completed", receipt_id)
+        ocr_text = _ocr_text(ocr_result)
+        invoice = await or_client.extract_invoice(tmp_path, ocr_text)
+
+        logger.info(
+            "Receipt id=%s extracted invoice: %s",
+            receipt_id,
+            json.dumps(invoice, ensure_ascii=False),
+        )
+
+        repo.save_invoice(receipt_id, invoice)
+        repo.update_status(receipt_id, "INVOICE_CREATED")
+        logger.info("Receipt id=%s invoice created", receipt_id)
     except Exception:
-        logger.exception("OCR failed for receipt id=%s", receipt_id)
+        logger.exception("Processing failed for receipt id=%s", receipt_id)
         repo.update_status(receipt_id, "FAILED")
     finally:
         if tmp_path and os.path.exists(tmp_path):
