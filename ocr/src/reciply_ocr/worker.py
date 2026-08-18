@@ -55,10 +55,10 @@ async def process_once(repo: ReceiptRepository, tg: TelegramClient, or_client: O
         logger.info(
             "Receipt id=%s extracted invoice: %s",
             receipt_id,
-            json.dumps(invoice, ensure_ascii=False),
+            json.dumps(invoice.model_dump(), ensure_ascii=False),
         )
 
-        repo.save_invoice(receipt_id, invoice)
+        repo.save_invoice(receipt_id, invoice.model_dump())
         repo.update_status(receipt_id, "INVOICE_CREATED")
         logger.info("Receipt id=%s invoice created", receipt_id)
     except Exception:

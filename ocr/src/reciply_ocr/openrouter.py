@@ -6,7 +6,7 @@ import mimetypes
 import httpx
 import litellm
 
-from reciply_ocr.invoice_schema import FIELD_NAMES, schema_description
+from reciply_ocr.invoice_schema import Invoice, response_format, schema_description
 
 logger = logging.getLogger("reciply_ocr.openrouter")
 
@@ -100,27 +100,7 @@ class OpenRouterClient:
             api_key=self._api_key,
             api_base=OPENROUTER_API_BASE,
             temperature=0,
+            response_format=response_format(),
         )
-
         content = response.choices[0].message.content or ""
-        return _parse_invoice_json(content)
-
-
-def _parse_invoice_json(content: str) -> dict:
-    cleaned = content.strip()
-    if cleaned.startswith("```"):
-        cleaned = cleaned.strip("`")
-        if cleaned.lstrip().lower().startswith("json"):
-            cleaned = cleaned.lstrip()[4:]
-        cleaned = cleaned.strip()
-    start = cleaned.find("{")
-    end = cleaned.rfind("}")
-    if start != -1 and end != -1 and end > start:
-        cleaned = cleaned[start : end + 1]
-
-    data = json.loads(cleaned)
-
-    invoice: dict = {}
-    for name in FIELD_NAMES:
-        invoice[name] = data.get(name)
-    return invoice
+        return Invoice.model_validate_json(content.strip())

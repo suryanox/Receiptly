@@ -1,6 +1,6 @@
 import logging
 
-from reciply_ocr.invoice_schema import FIELD_NAMES
+from reciply_ocr.invoice_schema import column_names
 
 logger = logging.getLogger("reciply_ocr.repository")
 
@@ -47,10 +47,10 @@ class ReceiptRepository:
             self._put_conn(conn)
 
     def save_invoice(self, receipt_id: int, invoice: dict):
-        columns = ["receipt_id"] + FIELD_NAMES
+        columns = ["receipt_id"] + column_names()
         placeholders = ", ".join(["%s"] * len(columns))
         column_list = ", ".join(columns)
-        values = [receipt_id] + [invoice.get(name) for name in FIELD_NAMES]
+        values = [receipt_id] + [invoice.get(name) for name in column_names()]
 
         conn = self._get_conn()
         try:

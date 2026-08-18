@@ -1,83 +1,65 @@
-from typing import Any
+from datetime import date
+from typing import Optional
 
-INVOICE_FIELDS: list[dict[str, Any]] = [
-    {
-        "name": "invoice_number",
-        "type": "string",
-        "description": "Invoice or receipt number as printed on the document. Null if not present.",
-        "nullable": True,
-    },
-    {
-        "name": "invoice_date",
-        "type": "date",
-        "description": "Issue date of the invoice in ISO format YYYY-MM-DD. Null if not present.",
-        "nullable": True,
-    },
-    {
-        "name": "supplier_name",
-        "type": "string",
-        "description": "Name of the merchant / seller / supplier.",
-        "nullable": True,
-    },
-    {
-        "name": "supplier_tax_id",
-        "type": "string",
-        "description": "Tax identification number (VAT/TIN/GST) of the supplier. Null if not present.",
-        "nullable": True,
-    },
-    {
-        "name": "currency",
-        "type": "string",
-        "description": "ISO 4217 currency code of 3 uppercase letters, e.g. USD, EUR, INR. Required.",
-        "nullable": False,
-    },
-    {
-        "name": "subtotal",
-        "type": "number",
-        "description": "Sum of line items before tax and discounts. Null if not present.",
-        "nullable": True,
-    },
-    {
-        "name": "discount",
-        "type": "number",
-        "description": "Total discount amount applied. Null if not present (treat as 0 only if explicitly shown).",
-        "nullable": True,
-    },
-    {
-        "name": "tax_amount",
-        "type": "number",
-        "description": "Total tax / VAT amount. Null if not present.",
-        "nullable": True,
-    },
-    {
-        "name": "tax_rate",
-        "type": "number",
-        "description": "Tax rate as a percentage, e.g. 18.0 for 18%. Null if not present.",
-        "nullable": True,
-    },
-    {
-        "name": "total_amount",
-        "type": "number",
-        "description": "Final amount payable including tax and discounts. Required.",
-        "nullable": False,
-    },
-    {
-        "name": "category",
-        "type": "string",
-        "description": (
-            "A short category for the purchase, e.g. GROCERIES, RESTAURANT, "
-            "UTILITIES, TRAVEL, ELECTRONICS, OTHER. Default to OTHER if unclear."
-        ),
-        "nullable": True,
-    },
-]
+from pydantic import BaseModel, Field
 
-FIELD_NAMES = [f["name"] for f in INVOICE_FIELDS]
+
+class Invoice(BaseModel):
+    invoice_number: Optional[str] = Field(
+        default=None, description="Invoice/receipt number as printed. Null if not present."
+    )
+    invoice_date: Optional[date] = Field(
+        default=None, description="Issue date in ISO YYYY-MM-DD. Null if not present."
+    )
+    supplier_name: Optional[str] = Field(
+        default=None, description="Name of the merchant / seller / supplier."
+    )
+    supplier_tax_id: Optional[str] = Field(
+        default=None, description="Tax ID (VAT/TIN/GST) of the supplier. Null if not present."
+    )
+    currency: str = Field(
+        default="USD", description="ISO 4217 currency code, 3 uppercase letters."
+    )
+    subtotal: Optional[float] = Field(
+        default=None, description="Sum of line items before tax/discount. Null if not present."
+    )
+    discount: Optional[float] = Field(
+        default=None, description="Total discount amount. Null if not present."
+    )
+    tax_amount: Optional[float] = Field(
+        default=None, description="Total tax/VAT amount. Null if not present."
+    )
+    tax_rate: Optional[float] = Field(
+        default=None, description="Tax rate as percentage, e.g. 18.0. Null if not present."
+    )
+    total_amount: float = Field(
+        default=0.0, description="Final amount payable including tax and discounts."
+    )
+    category: Optional[str] = Field(
+        default=None,
+        description="Short category: GROCERIES, RESTAURANT, UTILITIES, TRAVEL, ELECTRONICS, OTHER.",
+    )
+
+
+def column_names() -> list[str]:
+    return list(Invoice.model_fields.keys())
 
 
 def schema_description() -> str:
     lines = []
-    for f in INVOICE_FIELDS:
-        req = "required" if not f["nullable"] else "optional"
-        lines.append(f"- {f['name']} ({f['type']}, {req}): {f['description']}")
+    for name, field in Invoice.model_fields.items():
+        req = "required" if field.is_required() else "optional"
+        lines.append(f"- {name} ({field.annotation}, {req}): {field.description}")
     return "\n".join(lines)
+
+
+def response_format() -> dict:
+    schema = Invoice.model_json_schema()
+    return {
+        "type": "json_schema",
+        "json_schema": {
+            "name": "invoice",
+            "strict": True,
+            "schema": schema,
+        },
+    }
