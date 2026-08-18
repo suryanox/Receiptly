@@ -4,5 +4,6 @@ enum class Status {
     PENDING,
     PROCESSING,
     OCR_COMPLETED,
+    INVALID_IMAGE,
     FAILED
 }
