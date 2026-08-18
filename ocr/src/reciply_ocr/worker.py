@@ -25,7 +25,13 @@ async def process_once(repo: ReceiptRepository, tg: TelegramClient):
             tmp_path = tmp.name
 
         await tg.download(file_id, tmp_path)
+
         ocr_result = run_ocr(tmp_path)
+
+        if not ocr_result:
+            logger.info("Receipt id=%s has no detectable text, marking INVALID_IMAGE", receipt_id)
+            repo.update_status(receipt_id, "INVALID_IMAGE")
+            return
 
         logger.info(
             "Receipt id=%s OCR found %d line(s): %s",
