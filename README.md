@@ -12,9 +12,16 @@ It is split into two services:
 Data flows: Telegram → `server` webhook → PostgreSQL → `ocr` worker → OpenAI/OpenRouter → PostgreSQL → back to the user.
 
 # DEMO
-![1.jpeg](1.jpeg) .
-![2.jpeg](2.jpeg) .
-![3.jpeg](3.jpeg) .
+<p align="center">
+  <b>Start</b><br>
+  <img src="1.jpeg" width="250" />
+  <br><br>
+  <b>Send Image</b><br>
+  <img src="2.jpeg" width="250" />
+  <br><br>
+  <b>Click Report</b><br>
+  <img src="3.jpeg" width="250" />
+</p>
 ## Architecture
 
 ```mermaid
