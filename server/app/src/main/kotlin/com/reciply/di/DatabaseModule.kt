@@ -1,5 +1,6 @@
 package com.reciply.di
 
+import com.reciply.db.InvoiceRepository
 import com.reciply.db.ReceiptRepository
 import com.typesafe.config.ConfigFactory
 import com.zaxxer.hikari.HikariConfig
@@ -29,5 +30,9 @@ val databaseModule =
 
         single<ReceiptRepository> {
             ReceiptRepository(get())
+        }
+
+        single<InvoiceRepository> {
+            InvoiceRepository(get())
         }
     }

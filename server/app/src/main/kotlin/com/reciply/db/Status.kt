@@ -5,5 +5,5 @@ enum class Status {
     PROCESSING,
     INVALID_IMAGE,
     INVOICE_CREATED,
-    FAILED
+    FAILED,
 }

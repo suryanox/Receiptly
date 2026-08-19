@@ -17,7 +17,7 @@ val appModule =
         single { TelegramReplyService(get()) }
 
         single { TextProcessor(get()) }
-        single { CallbackProcessor(get()) }
+        single { CallbackProcessor(get(), get(), get()) }
         single { ImageProcessor(get(), get()) }
 
         single {

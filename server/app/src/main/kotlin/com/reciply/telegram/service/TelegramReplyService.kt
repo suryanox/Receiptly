@@ -47,9 +47,11 @@ class TelegramReplyService(
         chatId: Long,
         document: ByteArray,
         caption: String? = null,
+        fileName: String? = null,
     ) = withContext(Dispatchers.IO) {
         val request = SendDocument(chatId, document)
         caption?.let { request.caption(it) }
+        fileName?.let { request.fileName(it) }
         bot.execute(request)
     }
 }
