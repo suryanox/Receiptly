@@ -14,7 +14,7 @@ class TextProcessor(
         replyService.sendTextWithButtons(
             chatId = context.chatId,
             text = "Hello $name! Welcome to Receiptly.\nChoose an option:",
-            buttons = listOf("Start" to "start", "Report" to "report"),
+            buttons = listOf("Report" to "report"),
         )
     }
 }

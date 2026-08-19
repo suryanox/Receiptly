@@ -18,18 +18,8 @@ class CallbackProcessor(
         context.callbackQueryId?.let { replyService.answerCallbackQuery(it) }
 
         when (context.text) {
-            "start" -> handleStart(context)
             "report" -> handleReport(context)
         }
-    }
-
-    private suspend fun handleStart(context: TelegramRequestContext) {
-        val name = context.firstName ?: "there"
-        replyService.sendTextWithButtons(
-            chatId = context.chatId,
-            text = "Hello $name! Welcome to Receiptly.\nChoose an option:",
-            buttons = listOf("Start" to "start", "Report" to "report"),
-        )
     }
 
     private suspend fun handleReport(context: TelegramRequestContext) {
