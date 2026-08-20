@@ -1,6 +1,7 @@
 package com.reciply.db
 
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
@@ -23,34 +24,36 @@ data class Invoice(
     val category: String?,
 )
 
+private fun ResultRow.toInvoice(): Invoice =
+    Invoice(
+        id = this[InvoiceTable.id],
+        receiptId = this[InvoiceTable.receiptId],
+        invoiceNumber = this[InvoiceTable.invoiceNumber],
+        invoiceDate = this[InvoiceTable.invoiceDate],
+        supplierName = this[InvoiceTable.supplierName],
+        supplierTaxId = this[InvoiceTable.supplierTaxId],
+        currency = this[InvoiceTable.currency],
+        subtotal = this[InvoiceTable.subtotal],
+        discount = this[InvoiceTable.discount],
+        taxAmount = this[InvoiceTable.taxAmount],
+        taxRate = this[InvoiceTable.taxRate],
+        totalAmount = this[InvoiceTable.totalAmount],
+        category = this[InvoiceTable.category],
+    )
+
 class InvoiceRepository(
     private val database: Database,
 ) {
     suspend fun findByReceiptIds(receiptIds: List<Long>): List<Invoice> {
         if (receiptIds.isEmpty()) return emptyList()
+
         return newSuspendedTransaction(
             db = database,
         ) {
             InvoiceTable
                 .selectAll()
                 .where { InvoiceTable.receiptId inList receiptIds }
-                .map { row ->
-                    Invoice(
-                        id = row[InvoiceTable.id],
-                        receiptId = row[InvoiceTable.receiptId],
-                        invoiceNumber = row[InvoiceTable.invoiceNumber],
-                        invoiceDate = row[InvoiceTable.invoiceDate],
-                        supplierName = row[InvoiceTable.supplierName],
-                        supplierTaxId = row[InvoiceTable.supplierTaxId],
-                        currency = row[InvoiceTable.currency],
-                        subtotal = row[InvoiceTable.subtotal],
-                        discount = row[InvoiceTable.discount],
-                        taxAmount = row[InvoiceTable.taxAmount],
-                        taxRate = row[InvoiceTable.taxRate],
-                        totalAmount = row[InvoiceTable.totalAmount],
-                        category = row[InvoiceTable.category],
-                    )
-                }
+                .map { it.toInvoice() }
         }
     }
 }

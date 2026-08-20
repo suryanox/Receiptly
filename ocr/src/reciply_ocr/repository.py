@@ -1,81 +1,54 @@
-import logging
+from __future__ import annotations
 
-from reciply_ocr.invoice_schema import column_names
+import logging
+import textwrap
+
+from reciply_ocr.db import Database
+from reciply_ocr.models import PendingReceipt, ReceiptStatus
 
 logger = logging.getLogger("reciply_ocr.repository")
 
+_CLAIM_PENDING_SQL = textwrap.dedent(
+    """
+    UPDATE receipts
+       SET status = %s, updated_at = NOW()
+     WHERE id = (
+           SELECT id
+             FROM receipts
+            WHERE status = %s
+            ORDER BY created_at
+            LIMIT 1
+            FOR UPDATE SKIP LOCKED
+     )
+    RETURNING id, image_file_id
+    """
+)
+
 
 class ReceiptRepository:
-    def __init__(self, get_conn, put_conn):
-        self._get_conn = get_conn
-        self._put_conn = put_conn
+    def __init__(self, database: Database) -> None:
+        self._database = database
 
-    def claim_pending(self):
-        conn = self._get_conn()
-        try:
-            with conn.cursor() as cur:
-                cur.execute(
-                    """
-                    UPDATE receipts
-                    SET status = 'PROCESSING', updated_at = NOW()
-                    WHERE id = (
-                        SELECT id FROM receipts
-                        WHERE status = 'PENDING'
-                        ORDER BY created_at
-                        LIMIT 1
-                        FOR UPDATE SKIP LOCKED
-                    )
-                    RETURNING id, image_file_id
-                    """
-                )
-                row = cur.fetchone()
-                conn.commit()
-                return row
-        finally:
-            self._put_conn(conn)
+    def claim_next_pending(self) -> PendingReceipt | None:
+        """Atomically claim the oldest PENDING receipt, or None if none exists."""
+        with self._database.transaction() as cursor:
+            cursor.execute(
+                _CLAIM_PENDING_SQL,
+                (ReceiptStatus.PROCESSING.value, ReceiptStatus.PENDING.value),
+            )
+            row = cursor.fetchone()
 
-    def update_status(self, receipt_id: int, status: str):
-        conn = self._get_conn()
-        try:
-            with conn.cursor() as cur:
-                cur.execute(
-                    "UPDATE receipts SET status = %s, updated_at = NOW() WHERE id = %s",
-                    (status, receipt_id),
-                )
-                conn.commit()
-        finally:
-            self._put_conn(conn)
+        if row is None:
+            logger.debug("No pending receipts")
+            return None
 
-    def save_invoice(self, receipt_id: int, invoice: dict):
-        columns = ["receipt_id"] + column_names()
-        placeholders = ", ".join(["%s"] * len(columns))
-        column_list = ", ".join(columns)
-        values = [receipt_id] + [invoice.get(name) for name in column_names()]
+        logger.info("Claimed receipt id=%s", row[0])
+        return PendingReceipt(id=row[0], image_file_id=row[1])
 
-        conn = self._get_conn()
-        try:
-            with conn.cursor() as cur:
-                cur.execute(
-                    f"""
-                    INSERT INTO invoices ({column_list})
-                    VALUES ({placeholders})
-                    ON CONFLICT (receipt_id) DO UPDATE
-                    SET
-                        invoice_number = EXCLUDED.invoice_number,
-                        invoice_date = EXCLUDED.invoice_date,
-                        supplier_name = EXCLUDED.supplier_name,
-                        supplier_tax_id = EXCLUDED.supplier_tax_id,
-                        currency = EXCLUDED.currency,
-                        subtotal = EXCLUDED.subtotal,
-                        discount = EXCLUDED.discount,
-                        tax_amount = EXCLUDED.tax_amount,
-                        tax_rate = EXCLUDED.tax_rate,
-                        total_amount = EXCLUDED.total_amount,
-                        category = EXCLUDED.category,
-                        updated_at = NOW()
-                    """,
-                    values,
-                )
-                conn.commit()
-        finally:
-            self._put_conn(conn)
+    def update_status(self, receipt_id: int, status: ReceiptStatus) -> None:
+        with self._database.transaction() as cursor:
+            cursor.execute(
+                "UPDATE receipts SET status = %s, updated_at = NOW() WHERE id = %s",
+                (status.value, receipt_id),
+            )
+        logger.info("Receipt id=%s -> status=%s", receipt_id, status.value)

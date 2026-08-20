@@ -1,5 +1,6 @@
 package com.reciply.telegram.processor
 
+import com.reciply.telegram.TelegramMessages
 import com.reciply.telegram.model.MessageType
 import com.reciply.telegram.model.TelegramRequestContext
 import com.reciply.telegram.service.TelegramReplyService
@@ -10,11 +11,10 @@ class TextProcessor(
     override fun canProcess(context: TelegramRequestContext): Boolean = context.messageType == MessageType.TEXT
 
     override suspend fun process(context: TelegramRequestContext) {
-        val name = context.firstName ?: "there"
         replyService.sendTextWithButtons(
             chatId = context.chatId,
-            text = "Hello $name! Welcome to Receiptly.\nChoose an option:",
-            buttons = listOf("Report" to "report"),
+            text = TelegramMessages.greeting(context.firstName ?: "there"),
+            buttons = TelegramMessages.menuButtons,
         )
     }
 }

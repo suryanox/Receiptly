@@ -2,7 +2,7 @@ package com.reciply.di
 
 import com.reciply.db.InvoiceRepository
 import com.reciply.db.ReceiptRepository
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.Config
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import org.jetbrains.exposed.sql.Database
@@ -10,9 +10,8 @@ import org.koin.dsl.module
 
 val databaseModule =
     module {
-
         single<HikariDataSource> {
-            val config = ConfigFactory.load()
+            val config = get<Config>()
 
             HikariConfig()
                 .apply {
