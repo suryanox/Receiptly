@@ -7,7 +7,7 @@ from reciply_ocr.config import load_settings
 from reciply_ocr.db import Database
 from reciply_ocr.invoice_repository import InvoiceRepository
 from reciply_ocr.ocr import OcrEngine
-from reciply_ocr.openrouter import OpenRouterExtractor
+from reciply_ocr.llmclient import OpenRouterExtractor
 from reciply_ocr.processor import ReceiptProcessor
 from reciply_ocr.repository import ReceiptRepository
 from reciply_ocr.telegram_client import TelegramClient
@@ -28,7 +28,7 @@ def build_processor() -> tuple[ReceiptProcessor, Database, TelegramClient]:
         invoices=InvoiceRepository(database),
         telegram=telegram,
         ocr_engine=OcrEngine(),
-        extractor=OpenRouterExtractor(settings.openrouter),
+        extractor=OpenRouterExtractor(settings.llmclient),
     )
     return processor, database, telegram
 

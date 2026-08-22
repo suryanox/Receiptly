@@ -12,7 +12,7 @@ from reciply_ocr.config import OpenRouterSettings
 from reciply_ocr.invoice_schema import Invoice, response_format
 from reciply_ocr.prompts import SYSTEM_PROMPT, build_user_prompt
 
-logger = logging.getLogger("reciply_ocr.openrouter")
+logger = logging.getLogger("reciply_ocr.llmclient")
 
 OPENROUTER_API_BASE = "https://openrouter.ai/api/v1"
 _OPENROUTER_MODELS_URL = "https://openrouter.ai/api/v1/models"

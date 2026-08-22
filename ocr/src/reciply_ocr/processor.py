@@ -8,7 +8,7 @@ import tempfile
 from reciply_ocr.invoice_repository import InvoiceRepository
 from reciply_ocr.models import OcrLine, ReceiptStatus
 from reciply_ocr.ocr import OcrEngine
-from reciply_ocr.openrouter import OpenRouterExtractor
+from reciply_ocr.llmclient import OpenRouterExtractor
 from reciply_ocr.repository import ReceiptRepository
 from reciply_ocr.telegram_client import TelegramClient
 

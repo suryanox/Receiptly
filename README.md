@@ -97,7 +97,7 @@ The Ktor server listens on `http://localhost:8083` (health check at `/health`).
 cd ocr
 poetry install
 TELEGRAM_BOT_TOKEN=<your_bot_token> \
-OPENROUTER_API_KEY=<your_openrouter_api_key> \
+LLMCLIENT_API_KEY=<your_llm_client_api_key> \
 poetry run python -m reciply_ocr.main
 ```
 

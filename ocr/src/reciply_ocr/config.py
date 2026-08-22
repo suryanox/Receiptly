@@ -17,7 +17,7 @@ class DatabaseSettings:
 
 
 @dataclass(frozen=True)
-class OpenRouterSettings:
+class LLMClientSettings:
     api_key: str
     model: str | None = None
 
@@ -32,7 +32,7 @@ class AppSettings:
     name: str
     poll_interval_seconds: int
     database: DatabaseSettings
-    openrouter: OpenRouterSettings
+    llmclient: LLMClientSettings
     telegram: TelegramSettings
 
 
@@ -46,8 +46,8 @@ _ENV_OVERRIDES: dict[str, str] = {
     "database.user": "DATABASE_USER",
     "database.password": "DATABASE_PASSWORD",
     "database.maxPoolSize": "DATABASE_MAX_POOL_SIZE",
-    "openrouter.apiKey": "OPENROUTER_API_KEY",
-    "openrouter.model": "OPENROUTER_MODEL",
+    "llmclient.apiKey": "LLMCLIENT_API_KEY",
+    "llmclient.model": "LLMCLIENT_MODEL",
     "telegram.botToken": "TELEGRAM_BOT_TOKEN",
 }
 
@@ -80,7 +80,7 @@ def load_settings() -> AppSettings:
         else file_config
     )
 
-    explicit_model = config.get("openrouter.model", default="")
+    explicit_model = config.get("llmclient.model", default="")
 
     return AppSettings(
         name=config.get_string("app.name"),
@@ -91,8 +91,8 @@ def load_settings() -> AppSettings:
             password=config.get_string("database.password"),
             max_pool_size=config.get_int("database.maxPoolSize"),
         ),
-        openrouter=OpenRouterSettings(
-            api_key=config.get_string("openrouter.apiKey"),
+        llmclient=LLMClientSettings(
+            api_key=config.get_string("llmclient.apiKey"),
             model=explicit_model or None,
         ),
         telegram=TelegramSettings(bot_token=config.get_string("telegram.botToken")),

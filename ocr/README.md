@@ -19,8 +19,8 @@ All values are read from `resources/reference.conf` and can be overridden by env
 | Env var | Purpose |
 | --- | --- |
 | `TELEGRAM_BOT_TOKEN` | Telegram bot token |
-| `OPENROUTER_API_KEY` | OpenRouter API key |
-| `OPENROUTER_MODEL` | Optional explicit model id (empty = auto-select a free vision model) |
+| `LLMCLIENT_API_KEY` | LLM client API key |
+| `LLMCLIENT_MODEL` | Optional explicit model id (empty = auto-select a free vision model) |
 | `DATABASE_URL` / `DATABASE_USER` / `DATABASE_PASSWORD` | Postgres connection |
 | `POLL_INTERVAL_SECONDS` | Poll cadence |
 
@@ -28,7 +28,7 @@ All values are read from `resources/reference.conf` and can be overridden by env
 
 ```bash
 poetry install
-TELEGRAM_BOT_TOKEN=<token> OPENROUTER_API_KEY=<key> poetry run python -m reciply_ocr.main
+TELEGRAM_BOT_TOKEN=<token> LLMCLIENT_API_KEY=<key> poetry run python -m reciply_ocr.main
 ```
 
 ## Layout
@@ -44,7 +44,7 @@ reciply_ocr/
 ├── invoice_schema.py     # pydantic Invoice + JSON-schema scaffold for the LLM
 ├── prompts.py            # system/user prompt builders
 ├── ocr.py                # lazy PaddleOCR wrapper
-├── openrouter.py         # LLM client with retries + free-model auto-select
+├── llmclient.py          # LLM client with retries + free-model auto-select
 ├── processor.py          # end-to-end pipeline orchestration
 └── telegram_client.py    # Telegram file download
 ```
